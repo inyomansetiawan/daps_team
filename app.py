@@ -80,13 +80,12 @@ def selection_form():
         ketua = st.radio(f"Pilih Ketua Tim untuk {team}:", TEAMS[team]["Ketua Tim"], key=f"{team}_ketua")
         coach = st.radio(f"Pilih Coach untuk {team}:", TEAMS[team]["Coach"], key=f"{team}_coach")
 
-        if st.button("Next", disabled="submitted" in st.session_state):
+        if st.button("Next"):
             st.session_state.selections.append([st.session_state.username, team, ketua, coach])
             st.session_state.current_team_index += 1
-            st.session_state["submitted"] = True
 
     else:
-        if st.button("Finish", disabled="submitted" in st.session_state):
+        if st.button("Finish"):
             for selection in st.session_state.selections:
                 save_to_csv(selection)
             st.session_state.finished = True
