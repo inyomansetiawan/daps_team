@@ -20,10 +20,10 @@ TEAMS = {
 # Spreadsheet ID (ambil dari URL spreadsheet)
 SPREADSHEET_ID = "1mI3kpVWQaCYMQoufi9yuqM13prs14G4IVDMD7gd8BFo"
 
-# Fungsi untuk menghubungkan ke Google Sheets
+# Fungsi untuk menghubungkan ke Google Sheets menggunakan akses publik
 def connect_to_google_sheets(sheet_id):
-    # Menghubungkan ke spreadsheet menggunakan akses publik
-    client = gspread.service_account()
+    # Menghubungkan ke spreadsheet tanpa autentikasi menggunakan akses publik
+    client = gspread.Client(None)  # Tidak menggunakan autentikasi
     return client.open_by_key(sheet_id).sheet1  # Mengakses sheet pertama
 
 # Fungsi untuk menyimpan data ke Google Sheets
