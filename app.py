@@ -1,4 +1,3 @@
-
 import streamlit as st
 
 # Dummy data untuk login dan tim terkait
@@ -41,10 +40,10 @@ def login():
     
     if login_button:
         if username in USERS and USERS[username]["password"] == password:
-            st.success("Login berhasil!")
             st.session_state.logged_in = True
             st.session_state.username = username
             st.session_state.teams = USERS[username]["teams"]
+            st.experimental_rerun()  # Memaksa reload aplikasi
         else:
             st.error("Username atau password salah.")
 
@@ -57,8 +56,6 @@ def selection_form(team):
     
     if st.button(f"Submit untuk {team}", key=f"{team}_submit"):
         st.success(f"Anda telah memilih **{ketua}** sebagai Ketua Tim dan **{pelatih}** sebagai Pelatih untuk {team}.")
-        # Simpan hasil jika diperlukan
-        # e.g., save_to_database(st.session_state.username, team, ketua, pelatih)
 
 # Main aplikasi
 if "logged_in" not in st.session_state:
