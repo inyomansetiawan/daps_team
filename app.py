@@ -73,6 +73,8 @@ def user_summary():
         df = pd.read_csv(filename)
         user_data = df[df["username"] == st.session_state.username]
         if not user_data.empty:
+            # Menampilkan hanya kolom "team", "ketua", dan "coach"
+            user_data = user_data[["team", "ketua", "coach"]]
             st.dataframe(user_data)
         else:
             st.warning("Belum ada data yang Anda isi.")
@@ -89,27 +91,35 @@ def selection_form():
         team = st.session_state.teams[team_index]
         st.subheader(f"Pemilihan untuk {team}")
 
-        ketua = st.radio(f"Pilih Ketua Tim untuk {team}:", TEAMS[team]["Ketua Tim"], key=f"{team}_ketua")
-        coach = st.radio(f"Pilih Coach untuk {team}:", TEAMS[team]["Coach"], key=f"{team}_coach")
+        # Radio button tidak terisi dulu, hanya terisi ketika diklik
+        ketua = st.radio(f"Pilih Ketua Tim untuk {team}:", TEAMS[team]["Ketua Tim"], key=f"{team}_ketua", index=-1)
+        coach = st.radio(f"Pilih Coach untuk {team}:", TEAMS[team]["Coach"], key=f"{team}_coach", index=-1)
 
         if st.button("Next"):
-            st.session_state.selections.append([st.session_state.username, team, ketua, coach])
-            st.session_state.current_team_index += 1
+            if ketua and coach:  # Pastikan pilihan ada sebelum lanjut
+                st.session_state.selections.append([st.session_state.username, team, ketua, coach])
+                st.session_state.current_team_index += 1
+            else:
+                st.warning("Silakan pilih Ketua dan Coach untuk tim ini.")
 
     else:
         if st.button("Finish and See Your Result"):
             for selection in st.session_state.selections:
                 save_to_csv(selection)
-            # st.session_state.has_submitted = True
+            st.session_state.has_submitted = True
             st.success("Data berhasil disimpan.")
             user_summary()
-
             if st.button("Logout"):
-                st.session_state.logged_in = False
-                st.session_state.finished = False
-                st.session_state.current_team_index = 0
-                st.session_state.selections = []
-                st.session_state.has_submitted = False
+                logout()
+
+# Fungsi untuk logout
+def logout():
+    st.session_state.logged_in = False
+    st.session_state.finished = False
+    st.session_state.current_team_index = 0
+    st.session_state.selections = []
+    st.session_state.has_submitted = False
+    st.success("Anda telah logout.")
 
 # Fungsi untuk menampilkan data admin
 def admin_view():
@@ -126,11 +136,7 @@ def admin_view():
         st.warning("Belum ada data pemilihan yang tersimpan.")
 
     if st.button("Logout"):
-        st.session_state.logged_in = False
-        st.session_state.finished = False
-        st.session_state.current_team_index = 0
-        st.session_state.selections = []
-        st.session_state.has_submitted = False
+        logout()
 
 # Main aplikasi
 if "logged_in" not in st.session_state:
