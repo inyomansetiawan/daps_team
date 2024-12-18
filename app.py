@@ -104,7 +104,7 @@ def selection_form():
             st.success("Data berhasil disimpan.")
             user_summary()
 
-             if st.button("Logout"):
+            if st.button("Logout"):
                 st.session_state.logged_in = False
                 st.session_state.finished = False
                 st.session_state.current_team_index = 0
