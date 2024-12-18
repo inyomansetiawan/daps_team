@@ -53,26 +53,11 @@ def check_user_data(username):
 def save_to_csv(selection):
     filename = "selections.csv"
     file_exists = os.path.isfile(filename)
-    
-    # Jika file sudah ada, baca data yang ada
-    existing_data = []
-    if file_exists:
-        with open(filename, mode="r") as file:
-            reader = csv.reader(file)
-            existing_data = list(reader)
-    
-    # Pastikan kolom header ada saat file belum ada
-    header = ["username", "team", "ketua", "coach"]
-    if not file_exists or not existing_data:
-        existing_data.append(header)
-    
-    # Periksa apakah data sudah ada
-    if selection not in existing_data:
-        with open(filename, mode="a", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerow(selection)
-    else:
-        print("Data already exists. Skipping write.")
+    with open(filename, mode="a", newline="") as file:
+        writer = csv.writer(file)
+        if not file_exists:
+            writer.writerow(["username", "team", "ketua", "coach"])
+        writer.writerow(selection)
 
 # Fungsi untuk menampilkan ringkasan isian pengguna
 def user_summary():
