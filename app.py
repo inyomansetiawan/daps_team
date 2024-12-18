@@ -4,7 +4,6 @@ from firebase_admin import credentials, firestore
 
 # Load secrets
 cred_dict = st.secrets["firebase_credentials"].to_dict()
-st.write(cred_dict)  # Debug: Periksa isi dictionary
 
 # Perbaiki private_key jika diperlukan
 cred_dict["private_key"] = cred_dict["private_key"].replace("\\n", "\n")
