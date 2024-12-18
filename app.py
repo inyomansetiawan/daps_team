@@ -21,12 +21,19 @@ TEAMS = {
 # Fungsi untuk login
 def login():
     st.title("Login")
-    username = st.text_input("Username")
-    password = st.text_input("Password", type="password")
-    login_button = st.button("Login")
+    username = st.text_input("Username", key="login_username")
+    password = st.text_input("Password", type="password", key="login_password")
 
-    if login_button:
+    if "login_attempted" not in st.session_state:
+        st.session_state.login_attempted = False
+
+    # Tombol login
+    if st.button("Login") and not st.session_state.login_attempted:
+        st.session_state.login_attempted = True
+
+        # Verifikasi kredensial
         if username in USERS and USERS[username]["password"] == password:
+            # Set state login
             st.session_state.logged_in = True
             st.session_state.username = username
             st.session_state.teams = USERS[username]["teams"]
@@ -36,8 +43,11 @@ def login():
 
             # Periksa apakah pengguna sudah mengisi formulir
             check_user_data(username)
+
+            st.success("Login berhasil!")
         else:
             st.error("Username atau password salah.")
+            st.session_state.login_attempted = False  # Reset untuk mencoba lagi
 
 # Fungsi untuk memeriksa apakah pengguna sudah mengisi formulir
 def check_user_data(username):
@@ -91,20 +101,46 @@ def selection_form():
             st.session_state.selections.append([st.session_state.username, team, ketua, coach])
 
     # Tombol Finish dan tampilkan hasil
-    if st.button("Finish"):
+    if "finish_clicked" not in st.session_state:
+        st.session_state.finish_clicked = False
+    
+    if st.button("Finish") and not st.session_state.finish_clicked:
+        # Tandai tombol sudah ditekan
+        st.session_state.finish_clicked = True
+        
+        # Simpan data ke CSV
         for selection in st.session_state.selections:
             save_to_csv(selection)
+        
+        # Tandai pengguna sudah menyelesaikan pengisian formulir
         st.session_state.has_submitted = True
+    
+    # Setelah klik, tampilkan ringkasan
+    if st.session_state.has_submitted:
+        st.success("Formulir berhasil disimpan!")
+        user_summary()
+
 
 # Fungsi untuk logout
 def logout():
-    st.session_state.logged_in = False
-    st.session_state.selections = []
-    st.session_state.has_submitted = False
-    st.session_state.username = ""
-    st.session_state.teams = []
-    st.session_state.is_admin = False
-    st.session_state.current_team_index = 0
+    if "logout_attempted" not in st.session_state:
+        st.session_state.logout_attempted = False
+
+    if st.button("Logout") and not st.session_state.logout_attempted:
+        st.session_state.logout_attempted = True
+
+        # Reset semua state yang terkait login
+        st.session_state.logged_in = False
+        st.session_state.selections = []
+        st.session_state.has_submitted = False
+        st.session_state.username = ""
+        st.session_state.teams = []
+        st.session_state.is_admin = False
+        st.session_state.current_team_index = 0
+
+        # Tampilkan pesan sukses dan muat ulang aplikasi
+        st.success("Logout berhasil!")
+        st.experimental_rerun()
 
 # Fungsi untuk menampilkan data admin dengan fitur hapus
 def admin_view():
@@ -117,39 +153,12 @@ def admin_view():
         
         # Menampilkan data pengguna
         st.subheader("Data Pemilihan Pengguna")
-        st.dataframe(df)  # Tampilkan tabel sebelum ada perubahan
+        st.dataframe(df)
         
         # Tombol untuk mengunduh file CSV
         csv_data = df.to_csv(index=False).encode('utf-8')
         st.download_button(label="Download CSV", data=csv_data, file_name="selections.csv", mime="text/csv")
         
-        # Opsi untuk menghapus data pengguna tertentu
-        st.subheader("Hapus Data Pengguna")
-        usernames = df["username"].unique()
-        
-        if len(usernames) > 0:
-            selected_user = st.selectbox("Pilih username untuk dihapus:", usernames)
-            
-            if selected_user:
-                # Tombol untuk konfirmasi penghapusan
-                if st.button("Hapus Isian", key="confirm_delete"):
-                    confirm = st.checkbox("Saya yakin ingin menghapus data ini.", key="double_confirm")
-                    if confirm:
-                        # Menghapus data pengguna
-                        df = df[df["username"] != selected_user]
-                        
-                        # Menyimpan ulang data ke file CSV
-                        df.to_csv(filename, index=False)
-                        
-                        # Menampilkan pesan sukses
-                        st.success(f"Data untuk {selected_user} berhasil dihapus.")
-                        
-                        # Menampilkan tabel yang diperbarui
-                        st.dataframe(df)  # Tampilkan tabel setelah perubahan
-                    else:
-                        st.warning("Konfirmasi diperlukan untuk menghapus data.")
-        else:
-            st.warning("Tidak ada data pengguna untuk dihapus.")
     else:
         st.warning("Belum ada data pemilihan yang tersimpan.")
     
