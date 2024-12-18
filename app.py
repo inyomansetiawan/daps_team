@@ -4,10 +4,14 @@ from firebase_admin import credentials, firestore
 
 # Load secrets
 cred_dict = st.secrets["firebase_credentials"].to_dict()
-cred = credentials.Certificate(cred_dict)
+st.write(cred_dict)  # Debug: Periksa isi dictionary
+
+# Perbaiki private_key jika diperlukan
+cred_dict["private_key"] = cred_dict["private_key"].replace("\\n", "\n")
 
 # Initialize Firebase
 try:
+    cred = credentials.Certificate(cred_dict)
     firebase_admin.initialize_app(cred)
     db = firestore.client()
     st.success("Firebase berhasil diinisialisasi!")
