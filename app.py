@@ -85,13 +85,20 @@ def selection_form():
             st.session_state.selections.append([st.session_state.username, team, ketua, coach])
             st.session_state.current_team_index += 1
 
-    else:
-        if st.button("Finish"):
-            for selection in st.session_state.selections:
-                save_to_csv(selection)
-            st.session_state.has_submitted = True
-            st.success("Data berhasil disimpan.")
-            user_summary()
+        else:
+            if st.button("Finish"):
+                for selection in st.session_state.selections:
+                    save_to_csv(selection)
+                st.session_state.has_submitted = True
+                st.success("Data berhasil disimpan.")
+                user_summary()
+                
+            if st.button("Logout"):
+                st.session_state.logged_in = False
+                st.session_state.finished = False
+                st.session_state.current_team_index = 0
+                st.session_state.selections = []
+                st.session_state.has_submitted = False
 
 # Fungsi untuk menampilkan data admin
 def admin_view():
