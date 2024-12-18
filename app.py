@@ -19,19 +19,25 @@ TEAMS = {
 }
 
 # Fungsi untuk login
-if login_button:
-    if username in USERS and USERS[username]["password"] == password:
-        st.session_state.logged_in = True
-        st.session_state.username = username
-        st.session_state.teams = USERS[username]["teams"]
-        st.session_state.is_admin = USERS[username]["is_admin"]
-        st.session_state.selections = []
-        st.session_state.has_submitted = False
+def login():
+    st.title("Login")
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+    login_button = st.button("Login")
 
-        # Periksa apakah pengguna sudah mengisi formulir
-        check_user_data(username)
-    else:
-        st.error("Username atau password salah.")
+    if login_button:
+        if username in USERS and USERS[username]["password"] == password:
+            st.session_state.logged_in = True
+            st.session_state.username = username
+            st.session_state.teams = USERS[username]["teams"]
+            st.session_state.is_admin = USERS[username]["is_admin"]
+            st.session_state.selections = []
+            st.session_state.has_submitted = False
+
+            # Periksa apakah pengguna sudah mengisi formulir
+            check_user_data(username)
+        else:
+            st.error("Username atau password salah.")
 
 # Fungsi untuk memeriksa apakah pengguna sudah mengisi formulir
 def check_user_data(username):
