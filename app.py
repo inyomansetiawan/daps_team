@@ -5,9 +5,9 @@ import pandas as pd
 
 # Dummy data for login and teams
 USERS = {
-    "user1": {"password": "password1", "teams": ["Tim A", "Tim B"]},
-    "user2": {"password": "password2", "teams": ["Tim C", "Tim A", "Tim D"]},
-    "user3": {"password": "password3", "teams": ["Tim B", "Tim E"]}
+    "user1": {"password": "password1", "teams": ["Tim A", "Tim B"], "is_admin": False},
+    "user2": {"password": "password2", "teams": ["Tim C", "Tim A", "Tim D"], "is_admin": False},
+    "admin": {"password": "adminpass", "teams": [], "is_admin": True},  # Admin user
 }
 
 TEAMS = {
@@ -15,7 +15,7 @@ TEAMS = {
     "Tim B": {"Ketua Tim": ["Kandidat A", "Kandidat B"], "Coach": ["Coach X", "Coach Y", "Coach Z"]},
     "Tim C": {"Ketua Tim": ["Ketua 1", "Ketua 2"], "Coach": ["Coach Alpha", "Coach Beta"]},
     "Tim D": {"Ketua Tim": ["Ketua D1", "Ketua D2"], "Coach": ["Coach Delta1", "Coach Delta2"]},
-    "Tim E": {"Ketua Tim": ["Ketua E1", "Ketua E2"], "Coach": ["Coach E1", "Coach E2", "Coach E3"]}
+    "Tim E": {"Ketua Tim": ["Ketua E1", "Ketua E2"], "Coach": ["Coach E1", "Coach E2", "Coach E3"]},
 }
 
 # Fungsi untuk login
@@ -31,6 +31,7 @@ def login():
             st.session_state.logged_in = True
             st.session_state.username = username
             st.session_state.teams = USERS[username]["teams"]
+            st.session_state.is_admin = USERS[username]["is_admin"]
             st.session_state.current_team_index = 0
             st.session_state.selections = []
         else:
@@ -72,13 +73,17 @@ def selection_form():
             save_to_csv(st.session_state.selections)
             st.session_state.finished = True
 
-# Fungsi untuk menampilkan kesimpulan dari pemilihan
-def show_summary():
-    st.subheader("Kesimpulan Data Pemilihan")
-    df = pd.DataFrame(st.session_state.selections, columns=["username", "team", "ketua", "coach"])
-    st.dataframe(df)
+# Fungsi untuk menampilkan data admin
+def admin_view():
+    filename = "selections.csv"
+    st.title("Admin View")
+    if os.path.isfile(filename):
+        df = pd.read_csv(filename)
+        st.dataframe(df)
+    else:
+        st.warning("Belum ada data pemilihan yang tersimpan.")
 
-    if st.button("Exit"):
+    if st.button("Logout"):
         st.session_state.logged_in = False
         st.session_state.finished = False
         st.session_state.current_team_index = 0
@@ -91,9 +96,17 @@ if "finished" not in st.session_state:
     st.session_state.finished = False
 
 if st.session_state.logged_in:
-    if not st.session_state.finished:
-        selection_form()
+    if st.session_state.is_admin:
+        admin_view()
     else:
-        show_summary()
+        if not st.session_state.finished:
+            selection_form()
+        else:
+            st.subheader("Terima kasih telah mengisi!")
+            if st.button("Logout"):
+                st.session_state.logged_in = False
+                st.session_state.finished = False
+                st.session_state.current_team_index = 0
+                st.session_state.selections = []
 else:
     login()
