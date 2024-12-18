@@ -27,7 +27,6 @@ def login():
 
     if login_button:
         if username in USERS and USERS[username]["password"] == password:
-            st.success("Login berhasil!")
             st.session_state.logged_in = True
             st.session_state.username = username
             st.session_state.teams = USERS[username]["teams"]
@@ -49,10 +48,7 @@ def check_user_data(username):
         if not user_data.empty:
             st.session_state.has_submitted = True
             st.session_state.selections = user_data.values.tolist()
-            st.success("Anda sudah mengisi formulir sebelumnya.")
             user_summary()  # Menampilkan ringkasan data yang sudah disimpan
-        else:
-            st.session_state.has_submitted = False
 
 # Fungsi untuk menyimpan data ke file CSV
 def save_to_csv(selection):
@@ -73,18 +69,13 @@ def user_summary():
         user_data = df[df["username"] == st.session_state.username]
         if not user_data.empty:
             st.dataframe(user_data)
-        else:
-            st.warning("Belum ada data yang Anda isi.")
 
 # Form pemilihan untuk tim tertentu dalam satu halaman
 def selection_form():
     if st.session_state.has_submitted:
-        st.warning("Anda sudah mengisi formulir. Berikut adalah ringkasan isian Anda.")
         user_summary()
         if st.button("Logout"):
-            st.session_state.logged_in = False
-            st.session_state.selections = []
-            st.session_state.has_submitted = False
+            logout()
         return
 
     st.subheader("Form Pemilihan Tim")
@@ -104,8 +95,21 @@ def selection_form():
         for selection in st.session_state.selections:
             save_to_csv(selection)
         st.session_state.has_submitted = True
-        st.success("Data berhasil disimpan.")
         user_summary()
+
+        if st.button("Logout"):
+            logout()
+
+# Fungsi untuk logout
+def logout():
+    st.session_state.logged_in = False
+    st.session_state.selections = []
+    st.session_state.has_submitted = False
+    st.session_state.username = ""
+    st.session_state.teams = []
+    st.session_state.is_admin = False
+    st.session_state.current_team_index = 0
+    st.success("Anda telah logout.")
 
 # Fungsi untuk menampilkan data admin
 def admin_view():
@@ -122,9 +126,7 @@ def admin_view():
         st.warning("Belum ada data pemilihan yang tersimpan.")
 
     if st.button("Logout"):
-        st.session_state.logged_in = False
-        st.session_state.selections = []
-        st.session_state.has_submitted = False
+        logout()
 
 # Main aplikasi
 if "logged_in" not in st.session_state:
