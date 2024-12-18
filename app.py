@@ -82,7 +82,9 @@ def selection_form():
         st.warning("Anda sudah mengisi formulir. Berikut adalah ringkasan isian Anda.")
         user_summary()
         if st.button("Logout"):
-            logout()
+            st.session_state.logged_in = False
+            st.session_state.selections = []
+            st.session_state.has_submitted = False
         return
 
     st.subheader("Form Pemilihan Tim")
@@ -98,7 +100,7 @@ def selection_form():
             st.session_state.selections.append([st.session_state.username, team, ketua, coach])
 
     # Tombol Finish dan tampilkan hasil
-    if st.button("Finish and See Your Result"):
+    if st.button("Finish"):
         for selection in st.session_state.selections:
             save_to_csv(selection)
         st.session_state.has_submitted = True
