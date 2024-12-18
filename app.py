@@ -18,6 +18,20 @@ TEAMS = {
     "Tim E": {"Ketua Tim": ["Ketua E1", "Ketua E2"], "Coach": ["Coach E1", "Coach E2", "Coach E3"]},
 }
 
+# Inisialisasi state jika belum ada
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "has_submitted" not in st.session_state:
+    st.session_state.has_submitted = False
+if "username" not in st.session_state:
+    st.session_state.username = ""
+if "selections" not in st.session_state:
+    st.session_state.selections = []
+if "teams" not in st.session_state:
+    st.session_state.teams = []
+if "is_admin" not in st.session_state:
+    st.session_state.is_admin = False
+
 # Fungsi untuk login
 def login():
     st.title("Login")
