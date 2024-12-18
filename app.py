@@ -48,9 +48,6 @@ def check_user_data(username):
         if not user_data.empty:
             st.session_state.has_submitted = True
             st.session_state.selections = user_data.values.tolist()
-            user_summary()
-            if st.button("Logout"):
-                logout()
 
 # Fungsi untuk menyimpan data ke file CSV
 def save_to_csv(selection):
@@ -75,6 +72,7 @@ def user_summary():
 # Form pemilihan untuk tim tertentu dalam satu halaman
 def selection_form():
     if st.session_state.has_submitted:
+        st.warning("Anda sudah mengisi formulir. Berikut adalah ringkasan isian Anda.")
         user_summary()
         if st.button("Logout"):
             logout()
@@ -112,16 +110,36 @@ def logout():
 def admin_view():
     filename = "selections.csv"
     st.title("Admin View")
+    
     if os.path.isfile(filename):
+        # Menampilkan data pengguna
         df = pd.read_csv(filename)
         st.dataframe(df)
 
         # Tombol untuk mengunduh file CSV
         csv_data = df.to_csv(index=False).encode('utf-8')
         st.download_button(label="Download CSV", data=csv_data, file_name="selections.csv", mime="text/csv")
+        
+        # Opsi untuk menghapus data pengguna tertentu
+        st.subheader("Hapus Data Pengguna")
+        usernames = df["username"].unique()
+        selected_user = st.selectbox("Pilih username untuk dihapus:", usernames)
+        
+        if selected_user:
+            if st.button("Hapus Isian", key="confirm_delete"):
+                confirm = st.checkbox("Saya yakin ingin menghapus data ini.", key="double_confirm")
+                if confirm:
+                    # Menghapus data pengguna dari DataFrame
+                    df = df[df["username"] != selected_user]
+                    df.to_csv(filename, index=False)
+                    st.success(f"Data untuk {selected_user} berhasil dihapus.")
+                    st.experimental_rerun()
+                else:
+                    st.warning("Konfirmasi diperlukan untuk menghapus data.")
     else:
         st.warning("Belum ada data pemilihan yang tersimpan.")
 
+    # Tombol logout
     if st.button("Logout"):
         logout()
 
