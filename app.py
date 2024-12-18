@@ -3,13 +3,17 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import json
 
-# Inisialisasi Firebase menggunakan Streamlit Secrets
+# Load secrets
 cred_dict = json.loads(st.secrets["firebase_credentials"])
 cred = credentials.Certificate(cred_dict)
-firebase_admin.initialize_app(cred)
 
-# Inisialisasi Firestore
-db = firestore.client()
+# Initialize Firebase
+try:
+    firebase_admin.initialize_app(cred)
+    db = firestore.client()
+    st.success("Firebase berhasil diinisialisasi!")
+except ValueError as e:
+    st.error("Error saat menginisialisasi Firebase: {e}")
 
 # Dummy data untuk login dan tim terkait
 USERS = {
