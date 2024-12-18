@@ -18,20 +18,6 @@ TEAMS = {
     "Tim E": {"Ketua Tim": ["Ketua E1", "Ketua E2"], "Coach": ["Coach E1", "Coach E2", "Coach E3"]},
 }
 
-# Inisialisasi state jika belum ada
-if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
-if "has_submitted" not in st.session_state:
-    st.session_state.has_submitted = False
-if "username" not in st.session_state:
-    st.session_state.username = ""
-if "selections" not in st.session_state:
-    st.session_state.selections = []
-if "teams" not in st.session_state:
-    st.session_state.teams = []
-if "is_admin" not in st.session_state:
-    st.session_state.is_admin = False
-
 # Fungsi untuk login
 def login():
     st.title("Login")
@@ -63,14 +49,29 @@ def check_user_data(username):
             st.session_state.has_submitted = True
             st.session_state.selections = user_data.values.tolist()
 
-# Fungsi untuk menyimpan data ke file CSV
+# Fungsi untuk menyimpan data ke file CSV tanpa duplikasi
 def save_to_csv(selection):
     filename = "selections.csv"
     file_exists = os.path.isfile(filename)
+
+    # Membaca data CSV yang ada untuk memeriksa duplikasi
+    existing_data = pd.DataFrame()
+    if file_exists:
+        existing_data = pd.read_csv(filename)
+    
+    # Konversi ke DataFrame
+    new_data = pd.DataFrame([selection], columns=["username", "team", "ketua", "coach"])
+
+    # Periksa apakah data sudah ada
+    if not existing_data.empty:
+        if not existing_data.merge(new_data, how="inner").empty:
+            return  # Data sudah ada, tidak perlu ditambahkan
+    
+    # Jika data belum ada, tambahkan
     with open(filename, mode="a", newline="") as file:
         writer = csv.writer(file)
         if not file_exists:
-            writer.writerow(["username", "team", "ketua", "coach"])
+            writer.writerow(["username", "team", "ketua", "coach"])  # Tulis header jika file baru
         writer.writerow(selection)
 
 # Fungsi untuk menampilkan ringkasan isian pengguna
