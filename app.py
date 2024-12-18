@@ -106,16 +106,19 @@ def logout():
     st.session_state.is_admin = False
     st.session_state.current_team_index = 0
 
-# Fungsi untuk menampilkan data admin
+# Fungsi untuk menampilkan data admin dengan fitur hapus
 def admin_view():
     filename = "selections.csv"
     st.title("Admin View")
     
     if os.path.isfile(filename):
-        # Menampilkan data pengguna
+        # Membaca data dari CSV
         df = pd.read_csv(filename)
-        st.dataframe(df)
-
+        
+        # Menampilkan data pengguna
+        st.subheader("Data Pemilihan Pengguna")
+        st.dataframe(df)  # Tampilkan tabel sebelum ada perubahan
+        
         # Tombol untuk mengunduh file CSV
         csv_data = df.to_csv(index=False).encode('utf-8')
         st.download_button(label="Download CSV", data=csv_data, file_name="selections.csv", mime="text/csv")
@@ -123,22 +126,33 @@ def admin_view():
         # Opsi untuk menghapus data pengguna tertentu
         st.subheader("Hapus Data Pengguna")
         usernames = df["username"].unique()
-        selected_user = st.selectbox("Pilih username untuk dihapus:", usernames)
         
-        if selected_user:
-            if st.button("Hapus Isian", key="confirm_delete"):
-                confirm = st.checkbox("Saya yakin ingin menghapus data ini.", key="double_confirm")
-                if confirm:
-                    # Menghapus data pengguna dari DataFrame
-                    df = df[df["username"] != selected_user]
-                    df.to_csv(filename, index=False)
-                    st.success(f"Data untuk {selected_user} berhasil dihapus.")
-                    st.experimental_rerun()
-                else:
-                    st.warning("Konfirmasi diperlukan untuk menghapus data.")
+        if len(usernames) > 0:
+            selected_user = st.selectbox("Pilih username untuk dihapus:", usernames)
+            
+            if selected_user:
+                # Tombol untuk konfirmasi penghapusan
+                if st.button("Hapus Isian", key="confirm_delete"):
+                    confirm = st.checkbox("Saya yakin ingin menghapus data ini.", key="double_confirm")
+                    if confirm:
+                        # Menghapus data pengguna
+                        df = df[df["username"] != selected_user]
+                        
+                        # Menyimpan ulang data ke file CSV
+                        df.to_csv(filename, index=False)
+                        
+                        # Menampilkan pesan sukses
+                        st.success(f"Data untuk {selected_user} berhasil dihapus.")
+                        
+                        # Menampilkan tabel yang diperbarui
+                        st.dataframe(df)  # Tampilkan tabel setelah perubahan
+                    else:
+                        st.warning("Konfirmasi diperlukan untuk menghapus data.")
+        else:
+            st.warning("Tidak ada data pengguna untuk dihapus.")
     else:
         st.warning("Belum ada data pemilihan yang tersimpan.")
-
+    
     # Tombol logout
     if st.button("Logout"):
         logout()
