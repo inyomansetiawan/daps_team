@@ -105,8 +105,8 @@ def selection_form():
         if ketua and coach:
             st.session_state.selections.append([st.session_state.username, team, ketua, coach])
 
-    # Tombol Finish dan tampilkan hasil
-    if st.button("Finish"):
+    # Tombol Selesai dan tampilkan hasil
+    if st.button("Selesai"):
         for selection in st.session_state.selections:
             save_to_csv(selection)
         st.session_state.has_submitted = True
@@ -131,7 +131,7 @@ def admin_view():
         df = pd.read_csv(filename)
         
         # Menampilkan data pengguna
-        st.subheader("Data Pemilihan Pengguna")
+        st.subheader("Data Pemilihan Ketua Tim dan Coach")
         st.dataframe(df)
         
         # Tombol untuk mengunduh file CSV
