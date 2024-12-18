@@ -1,14 +1,13 @@
-import json
-from firebase_admin import credentials, initialize_app
 import streamlit as st
+import firebase_admin
+from firebase_admin import credentials
 
-# Mengambil kredensial dari secrets
+# Retrieve credentials as a dictionary
 firebase_credentials = st.secrets["firebase_credentials"]
-cred_dict = json.loads(firebase_credentials)
 
-# Inisialisasi kredensial Firebase
-cred = credentials.Certificate(cred_dict)
-initialize_app(cred)
+# Pass the dictionary directly to the Certificate method
+cred = credentials.Certificate(firebase_credentials)
+firebase_admin.initialize_app(cred)
 
 # Dummy data untuk login dan tim terkait
 USERS = {
