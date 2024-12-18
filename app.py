@@ -3,6 +3,9 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import json
 
+st.write(type(st.secrets["firebase_credentials"]))
+st.write(st.secrets["firebase_credentials"])
+
 # Load secrets
 cred_dict = json.loads(st.secrets["firebase_credentials"])
 cred = credentials.Certificate(cred_dict)
