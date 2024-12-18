@@ -35,23 +35,34 @@ def login():
             st.session_state.current_team_index = 0
             st.session_state.selections = []
             st.session_state.has_submitted = False
+
+            # Periksa apakah pengguna sudah mengisi formulir
+            check_user_data(username)
         else:
             st.error("Username atau password salah.")
+
+# Fungsi untuk memeriksa apakah pengguna sudah mengisi formulir
+def check_user_data(username):
+    filename = "selections.csv"
+    if os.path.isfile(filename):
+        df = pd.read_csv(filename)
+        user_data = df[df["username"] == username]
+        if not user_data.empty:
+            st.session_state.has_submitted = True
+            st.session_state.selections = user_data.values.tolist()
+            st.success("Anda sudah mengisi formulir sebelumnya.")
+            user_summary()  # Menampilkan ringkasan data yang sudah disimpan
+        else:
+            st.session_state.has_submitted = False
 
 # Fungsi untuk menyimpan data ke file CSV
 def save_to_csv(selection):
     filename = "selections.csv"
-
-    # Jika file tidak ada, buat header terlebih dahulu
     file_exists = os.path.isfile(filename)
     with open(filename, mode="a", newline="") as file:
         writer = csv.writer(file)
-
-        # Write header only if file is new
         if not file_exists:
             writer.writerow(["username", "team", "ketua", "coach"])
-
-        # Menyimpan data pemilihan ke CSV
         writer.writerow(selection)
 
 # Fungsi untuk menampilkan ringkasan isian pengguna
@@ -92,7 +103,7 @@ def selection_form():
             st.session_state.has_submitted = True
             st.success("Data berhasil disimpan.")
             user_summary()
-            
+
         if st.button("Logout"):
             st.session_state.logged_in = False
             st.session_state.finished = False
