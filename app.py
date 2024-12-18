@@ -34,41 +34,42 @@ def login():
             st.session_state.is_admin = USERS[username]["is_admin"]
             st.session_state.current_team_index = 0
             st.session_state.selections = []
+            st.session_state.has_submitted = False
         else:
             st.error("Username atau password salah.")
 
 # Fungsi untuk menyimpan data ke file CSV
 def save_to_csv(selection):
     filename = "selections.csv"
+
+    # Jika file tidak ada, buat header terlebih dahulu
     file_exists = os.path.isfile(filename)
     with open(filename, mode="a", newline="") as file:
         writer = csv.writer(file)
+
+        # Write header only if file is new
         if not file_exists:
-            writer.writerow(["username", "team", "ketua", "coach"])  # Header
+            writer.writerow(["username", "team", "ketua", "coach"])
+
+        # Menyimpan data pemilihan ke CSV
         writer.writerow(selection)
 
-# Cek apakah pengguna sudah mengisi
-def has_user_submitted(username):
-    filename = "selections.csv"
-    if not os.path.isfile(filename):
-        return False
-    df = pd.read_csv(filename)
-    return username in df["username"].values
-
-# Tampilkan ringkasan pengguna
+# Fungsi untuk menampilkan ringkasan isian pengguna
 def user_summary():
     st.subheader("Ringkasan Isian Anda")
     filename = "selections.csv"
     if os.path.isfile(filename):
         df = pd.read_csv(filename)
         user_data = df[df["username"] == st.session_state.username]
-        st.dataframe(user_data)
-    if st.button("Logout"):
-        st.session_state.logged_in = False
+        if not user_data.empty:
+            st.dataframe(user_data)
+        else:
+            st.warning("Belum ada data yang Anda isi.")
 
 # Form pemilihan untuk tim tertentu
 def selection_form():
-    if has_user_submitted(st.session_state.username):
+    if st.session_state.has_submitted:
+        st.warning("Anda sudah mengisi formulir. Berikut adalah ringkasan isian Anda.")
         user_summary()
         return
 
@@ -88,9 +89,11 @@ def selection_form():
         if st.button("Finish"):
             for selection in st.session_state.selections:
                 save_to_csv(selection)
-            st.session_state.finished = True
+            st.session_state.has_submitted = True
+            st.success("Data berhasil disimpan.")
+            user_summary()
 
-# Fungsi untuk admin
+# Fungsi untuk menampilkan data admin
 def admin_view():
     filename = "selections.csv"
     st.title("Admin View")
@@ -98,30 +101,31 @@ def admin_view():
         df = pd.read_csv(filename)
         st.dataframe(df)
 
-        # Tombol unduh file CSV
-        csv_data = df.to_csv(index=False).encode("utf-8")
+        # Tombol untuk mengunduh file CSV
+        csv_data = df.to_csv(index=False).encode('utf-8')
         st.download_button(label="Download CSV", data=csv_data, file_name="selections.csv", mime="text/csv")
     else:
         st.warning("Belum ada data pemilihan yang tersimpan.")
 
     if st.button("Logout"):
         st.session_state.logged_in = False
+        st.session_state.finished = False
+        st.session_state.current_team_index = 0
+        st.session_state.selections = []
+        st.session_state.has_submitted = False
 
 # Main aplikasi
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
 if "finished" not in st.session_state:
     st.session_state.finished = False
+if "has_submitted" not in st.session_state:
+    st.session_state.has_submitted = False
 
 if st.session_state.logged_in:
     if st.session_state.is_admin:
         admin_view()
     else:
-        if not st.session_state.finished:
-            selection_form()
-        else:
-            st.subheader("Terima kasih telah mengisi!")
-            if st.button("Logout"):
-                st.session_state.logged_in = False
+        selection_form()
 else:
     login()
