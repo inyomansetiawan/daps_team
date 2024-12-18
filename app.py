@@ -91,25 +91,10 @@ def selection_form():
             st.session_state.selections.append([st.session_state.username, team, ketua, coach])
 
     # Tombol Finish dan tampilkan hasil
-    if "finish_clicked" not in st.session_state:
-        st.session_state.finish_clicked = False
-    
-    if st.button("Finish") and not st.session_state.finish_clicked:
-        # Tandai tombol sudah ditekan
-        st.session_state.finish_clicked = True
-        
-        # Simpan data ke CSV
+    if st.button("Finish"):
         for selection in st.session_state.selections:
             save_to_csv(selection)
-        
-        # Tandai pengguna sudah menyelesaikan pengisian formulir
         st.session_state.has_submitted = True
-    
-    # Setelah klik, tampilkan ringkasan
-    if st.session_state.has_submitted:
-        st.success("Formulir berhasil disimpan!")
-        user_summary()
-
 
 # Fungsi untuk logout
 def logout():
@@ -121,7 +106,7 @@ def logout():
     st.session_state.is_admin = False
     st.session_state.current_team_index = 0
 
-# Fungsi untuk menampilkan data admin dengan fitur hapus
+# Fungsi untuk menampilkan data admin
 def admin_view():
     filename = "selections.csv"
     st.title("Admin View")
