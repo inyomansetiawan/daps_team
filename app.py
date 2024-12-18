@@ -1,15 +1,13 @@
-import streamlit as st
 import firebase_admin
 from firebase_admin import credentials, firestore
+import json
 
-# Inisialisasi Firebase
-if "firebase_initialized" not in st.session_state:
-    # Ambil kredensial dari Streamlit Secrets
-    cred = credentials.Certificate(st.secrets)
-    firebase_admin.initialize_app(cred)
-    st.session_state["firebase_initialized"] = True
+# Inisialisasi Firebase menggunakan Streamlit Secrets
+cred_dict = json.loads(st.secrets["firebase_credentials"])
+cred = credentials.Certificate(cred_dict)
+firebase_admin.initialize_app(cred)
 
-# Koneksi ke Firestore
+# Inisialisasi Firestore
 db = firestore.client()
 
 # Dummy data untuk login dan tim terkait
