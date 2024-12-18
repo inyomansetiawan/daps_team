@@ -80,11 +80,12 @@ def user_summary():
             st.warning("Belum ada data yang Anda isi.")
 
 # Form pemilihan untuk tim tertentu
-# Form pemilihan untuk tim tertentu
 def selection_form():
     if st.session_state.has_submitted:
         st.warning("Anda sudah mengisi formulir. Berikut adalah ringkasan isian Anda.")
         user_summary()
+        if st.button("Logout"):
+            logout()
         return
         
     team_index = st.session_state.current_team_index
@@ -92,14 +93,22 @@ def selection_form():
         team = st.session_state.teams[team_index]
         st.subheader(f"Pemilihan untuk {team}")
 
-        # Radio button tanpa index=-1
+        # Radio button untuk memilih Ketua dan Coach
         ketua = st.radio(f"Pilih Ketua Tim untuk {team}:", TEAMS[team]["Ketua Tim"], key=f"{team}_ketua")
         coach = st.radio(f"Pilih Coach untuk {team}:", TEAMS[team]["Coach"], key=f"{team}_coach")
 
-        if st.button("Next"):
-            if ketua and coach:  # Pastikan pilihan ada sebelum lanjut
-                st.session_state.selections.append([st.session_state.username, team, ketua, coach])
-                st.session_state.current_team_index += 1
+        # Navigasi ke halaman sebelumnya dan berikutnya
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            if team_index > 0:  # Menampilkan tombol Prev jika bukan tim pertama
+                if st.button("Prev"):
+                    st.session_state.current_team_index -= 1  # Kembali ke tim sebelumnya
+
+        with col2:
+            if ketua and coach:  # Tombol Next hanya muncul jika kedua pilihan ada
+                if st.button("Next"):
+                    st.session_state.selections.append([st.session_state.username, team, ketua, coach])
+                    st.session_state.current_team_index += 1  # Lanjut ke tim berikutnya
             else:
                 st.warning("Silakan pilih Ketua dan Coach untuk tim ini.")
 
