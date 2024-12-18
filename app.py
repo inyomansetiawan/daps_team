@@ -48,7 +48,9 @@ def check_user_data(username):
         if not user_data.empty:
             st.session_state.has_submitted = True
             st.session_state.selections = user_data.values.tolist()
-            user_summary()  # Menampilkan ringkasan data yang sudah disimpan
+            user_summary()
+            if st.button("Logout"):
+                logout()
 
 # Fungsi untuk menyimpan data ke file CSV
 def save_to_csv(selection):
@@ -95,10 +97,6 @@ def selection_form():
         for selection in st.session_state.selections:
             save_to_csv(selection)
         st.session_state.has_submitted = True
-        user_summary()
-
-        if st.button("Logout"):
-            logout()
 
 # Fungsi untuk logout
 def logout():
@@ -109,7 +107,6 @@ def logout():
     st.session_state.teams = []
     st.session_state.is_admin = False
     st.session_state.current_team_index = 0
-    st.success("Anda telah logout.")
 
 # Fungsi untuk menampilkan data admin
 def admin_view():
