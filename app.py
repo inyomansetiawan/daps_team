@@ -31,56 +31,69 @@ def login():
             st.session_state.logged_in = True
             st.session_state.username = username
             st.session_state.teams = USERS[username]["teams"]
+            st.session_state.current_team_index = 0
+            st.session_state.selections = []
         else:
             st.error("Username atau password salah.")
 
 # Fungsi untuk menyimpan data ke file CSV
-def save_to_csv(username, team, ketua, coach):
-    # Tentukan nama file CSV
+def save_to_csv(selections):
     filename = "selections.csv"
-    
+
     # Jika file tidak ada, buat header terlebih dahulu
     file_exists = os.path.isfile(filename)
     with open(filename, mode="a", newline="") as file:
         writer = csv.writer(file)
-        
+
         # Write header only if file is new
         if not file_exists:
             writer.writerow(["username", "team", "ketua", "coach"])
-        
-        # Menyimpan data pemilihan ke CSV
-        writer.writerow([username, team, ketua, coach])
+
+        # Menyimpan semua data pemilihan ke CSV
+        for selection in selections:
+            writer.writerow(selection)
 
 # Form pemilihan untuk tim tertentu
-def selection_form(team):
-    st.subheader(f"Pemilihan untuk {team}")
+def selection_form():
+    team_index = st.session_state.current_team_index
+    if team_index < len(st.session_state.teams):
+        team = st.session_state.teams[team_index]
+        st.subheader(f"Pemilihan untuk {team}")
 
-    ketua = st.radio(f"Pilih Ketua Tim untuk {team}:", TEAMS[team]["Ketua Tim"], key=f"{team}_ketua")
-    coach = st.radio(f"Pilih Coach untuk {team}:", TEAMS[team]["Coach"], key=f"{team}_coach")
+        ketua = st.radio(f"Pilih Ketua Tim untuk {team}:", TEAMS[team]["Ketua Tim"], key=f"{team}_ketua")
+        coach = st.radio(f"Pilih Coach untuk {team}:", TEAMS[team]["Coach"], key=f"{team}_coach")
 
-    if st.button(f"Submit untuk {team}", key=f"{team}_submit"):
-        save_to_csv(st.session_state.username, team, ketua, coach)
-        st.success(f"Data untuk tim {team} berhasil disimpan: Ketua **{ketua}**, Coach **{coach}**.")
+        if st.button("Next"):
+            st.session_state.selections.append([st.session_state.username, team, ketua, coach])
+            st.session_state.current_team_index += 1
 
-# Fungsi untuk menampilkan kesimpulan dari CSV
-def show_summary():
-    filename = "selections.csv"
-    if os.path.isfile(filename):
-        st.subheader("Kesimpulan Data Pemilihan")
-        df = pd.read_csv(filename)
-        st.dataframe(df)
     else:
-        st.warning("Belum ada data pemilihan yang tersimpan.")
+        if st.button("Finish"):
+            save_to_csv(st.session_state.selections)
+            st.session_state.finished = True
+
+# Fungsi untuk menampilkan kesimpulan dari pemilihan
+def show_summary():
+    st.subheader("Kesimpulan Data Pemilihan")
+    df = pd.DataFrame(st.session_state.selections, columns=["username", "team", "ketua", "coach"])
+    st.dataframe(df)
+
+    if st.button("Exit"):
+        st.session_state.logged_in = False
+        st.session_state.finished = False
+        st.session_state.current_team_index = 0
+        st.session_state.selections = []
 
 # Main aplikasi
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
+if "finished" not in st.session_state:
+    st.session_state.finished = False
 
 if st.session_state.logged_in:
-    st.title("Form Pemilihan Ketua Tim dan Coach")
-    for team in st.session_state.teams:
-        selection_form(team)
-    # Tampilkan kesimpulan setelah semua formulir
-    show_summary()
+    if not st.session_state.finished:
+        selection_form()
+    else:
+        show_summary()
 else:
     login()
