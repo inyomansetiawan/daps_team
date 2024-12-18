@@ -1,13 +1,9 @@
 import streamlit as st
 import firebase_admin
 from firebase_admin import credentials, firestore
-import json
-
-st.write(type(st.secrets["firebase_credentials"]))
-st.write(st.secrets["firebase_credentials"])
 
 # Load secrets
-cred_dict = json.loads(st.secrets["firebase_credentials"])
+cred_dict = st.secrets["firebase_credentials"].to_dict()
 cred = credentials.Certificate(cred_dict)
 
 # Initialize Firebase
@@ -16,7 +12,7 @@ try:
     db = firestore.client()
     st.success("Firebase berhasil diinisialisasi!")
 except ValueError as e:
-    st.error("Error saat menginisialisasi Firebase: {e}")
+    st.error(f"Error saat menginisialisasi Firebase: {e}")
 
 # Dummy data untuk login dan tim terkait
 USERS = {
