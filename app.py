@@ -19,35 +19,19 @@ TEAMS = {
 }
 
 # Fungsi untuk login
-def login():
-    st.title("Login")
-    username = st.text_input("Username", key="login_username")
-    password = st.text_input("Password", type="password", key="login_password")
+if login_button:
+    if username in USERS and USERS[username]["password"] == password:
+        st.session_state.logged_in = True
+        st.session_state.username = username
+        st.session_state.teams = USERS[username]["teams"]
+        st.session_state.is_admin = USERS[username]["is_admin"]
+        st.session_state.selections = []
+        st.session_state.has_submitted = False
 
-    if "login_attempted" not in st.session_state:
-        st.session_state.login_attempted = False
-
-    # Tombol login
-    if st.button("Login") and not st.session_state.login_attempted:
-        st.session_state.login_attempted = True
-
-        # Verifikasi kredensial
-        if username in USERS and USERS[username]["password"] == password:
-            # Set state login
-            st.session_state.logged_in = True
-            st.session_state.username = username
-            st.session_state.teams = USERS[username]["teams"]
-            st.session_state.is_admin = USERS[username]["is_admin"]
-            st.session_state.selections = []
-            st.session_state.has_submitted = False
-
-            # Periksa apakah pengguna sudah mengisi formulir
-            check_user_data(username)
-
-            st.success("Login berhasil!")
-        else:
-            st.error("Username atau password salah.")
-            st.session_state.login_attempted = False  # Reset untuk mencoba lagi
+        # Periksa apakah pengguna sudah mengisi formulir
+        check_user_data(username)
+    else:
+        st.error("Username atau password salah.")
 
 # Fungsi untuk memeriksa apakah pengguna sudah mengisi formulir
 def check_user_data(username):
@@ -123,24 +107,13 @@ def selection_form():
 
 # Fungsi untuk logout
 def logout():
-    if "logout_attempted" not in st.session_state:
-        st.session_state.logout_attempted = False
-
-    if st.button("Logout") and not st.session_state.logout_attempted:
-        st.session_state.logout_attempted = True
-
-        # Reset semua state yang terkait login
-        st.session_state.logged_in = False
-        st.session_state.selections = []
-        st.session_state.has_submitted = False
-        st.session_state.username = ""
-        st.session_state.teams = []
-        st.session_state.is_admin = False
-        st.session_state.current_team_index = 0
-
-        # Tampilkan pesan sukses dan muat ulang aplikasi
-        st.success("Logout berhasil!")
-        st.experimental_rerun()
+    st.session_state.logged_in = False
+    st.session_state.selections = []
+    st.session_state.has_submitted = False
+    st.session_state.username = ""
+    st.session_state.teams = []
+    st.session_state.is_admin = False
+    st.session_state.current_team_index = 0
 
 # Fungsi untuk menampilkan data admin dengan fitur hapus
 def admin_view():
