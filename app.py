@@ -18,7 +18,7 @@ TEAMS = {
 }
 
 # Spreadsheet ID (ambil dari URL spreadsheet)
-SPREADSHEET_ID = "1ABCdEfGHIjKlMnOPQRsTuvWxyz123456789"
+SPREADSHEET_ID = "1mI3kpVWQaCYMQoufi9yuqM13prs14G4IVDMD7gd8BFo"
 
 # Fungsi untuk menghubungkan ke Google Sheets
 def connect_to_google_sheets(sheet_id):
