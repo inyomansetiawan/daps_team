@@ -80,6 +80,7 @@ def user_summary():
             st.warning("Belum ada data yang Anda isi.")
 
 # Form pemilihan untuk tim tertentu
+# Form pemilihan untuk tim tertentu
 def selection_form():
     if st.session_state.has_submitted:
         st.warning("Anda sudah mengisi formulir. Berikut adalah ringkasan isian Anda.")
@@ -91,9 +92,9 @@ def selection_form():
         team = st.session_state.teams[team_index]
         st.subheader(f"Pemilihan untuk {team}")
 
-        # Radio button tidak terisi dulu, hanya terisi ketika diklik
-        ketua = st.radio(f"Pilih Ketua Tim untuk {team}:", TEAMS[team]["Ketua Tim"], key=f"{team}_ketua", index=-1)
-        coach = st.radio(f"Pilih Coach untuk {team}:", TEAMS[team]["Coach"], key=f"{team}_coach", index=-1)
+        # Radio button tanpa index=-1
+        ketua = st.radio(f"Pilih Ketua Tim untuk {team}:", TEAMS[team]["Ketua Tim"], key=f"{team}_ketua")
+        coach = st.radio(f"Pilih Coach untuk {team}:", TEAMS[team]["Coach"], key=f"{team}_coach")
 
         if st.button("Next"):
             if ketua and coach:  # Pastikan pilihan ada sebelum lanjut
