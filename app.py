@@ -1,6 +1,7 @@
 import streamlit as st
 import csv
 import os
+import pandas as pd
 
 # Dummy data for login and teams
 USERS = {
@@ -61,6 +62,16 @@ def selection_form(team):
         save_to_csv(st.session_state.username, team, ketua, coach)
         st.success(f"Data untuk tim {team} berhasil disimpan: Ketua **{ketua}**, Coach **{coach}**.")
 
+# Fungsi untuk menampilkan kesimpulan dari CSV
+def show_summary():
+    filename = "selections.csv"
+    if os.path.isfile(filename):
+        st.subheader("Kesimpulan Data Pemilihan")
+        df = pd.read_csv(filename)
+        st.dataframe(df)
+    else:
+        st.warning("Belum ada data pemilihan yang tersimpan.")
+
 # Main aplikasi
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
@@ -69,5 +80,7 @@ if st.session_state.logged_in:
     st.title("Form Pemilihan Ketua Tim dan Coach")
     for team in st.session_state.teams:
         selection_form(team)
+    # Tampilkan kesimpulan setelah semua formulir
+    show_summary()
 else:
     login()
