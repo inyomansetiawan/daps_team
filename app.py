@@ -50,11 +50,14 @@ USERS = {
 }
 
 TEAMS = {
-    "Tim A": {"Ketua Tim": ["Kandidat 1", "Kandidat 2", "Kandidat 3"], "Coach": ["Coach 1", "Coach 2"]},
-    "Tim B": {"Ketua Tim": ["Kandidat A", "Kandidat B"], "Coach": ["Coach X", "Coach Y", "Coach Z"]},
-    "Tim C": {"Ketua Tim": ["Ketua 1", "Ketua 2"], "Coach": ["Coach Alpha", "Coach Beta"]},
-    "Tim D": {"Ketua Tim": ["Ketua D1", "Ketua D2"], "Coach": ["Coach Delta1", "Coach Delta2"]},
-    "Tim E": {"Ketua Tim": ["Ketua E1", "Ketua E2"], "Coach": ["Coach E1", "Coach E2", "Coach E3"]},
+    "Tim ASUS": {"Ketua Tim": ["Reni Amelia", "Khairunnisah", "Nurarifin"], "Coach": ["Arham Rivai", "Taulina Anggarani", "Wisnu Winardi"]},
+    "Tim CERDAS": {"Ketua Tim": ["Valent Gigih Saputri", "Dewi Lestari Amaliah", "Bayu Dwi Kurniawan"], "Coach": ["Ambar Dwi Santoso", "Edi Waryono", "Taulina Anggarani"]},
+    "Tim DEV_QA & PERBAN": {"Ketua Tim": ["Sukmasari Dewanti", "Putri Wahyu Handayani", "Dewi Lestari Amaliah"], "Coach": ["Usman Bustaman", "Widyayanto Adinugroho", "Yeshri Rahayu"]},
+    "Tim DS": {"Ketua Tim": ["Dewi Krismawati", "Ranu Yulianto", "Dede Yoga Paramartha"], "Coach": ["Ambar Dwi Santoso", "Usman Bustaman", "Widyayanto Adinugroho"]},
+    "Tim FMS": {"Ketua Tim": ["Nurarifin", "Erna Yulianingsih", "Synthia Natalia Kristiani"], "Coach": ["Ambar Dwi Santoso", "Arham Rivai", "Lestyowati Endang Widyantari"]},
+    "Tim GENAI": {"Ketua Tim": ["Dhiar Niken Larasati", "Dewi Lestari Amaliah", "I Nyoman Setiawan"], "Coach": ["Ambar Dwi Santoso", "Mutijo", "Usman Bustaman"]},
+    "Tim IPMPLUS": {"Ketua Tim": ["Yoyo Karyono", "Adi Nugroho", "Nia Setiyawati"], "Coach": ["Edi Waryono", "Mutijo", "Wisnu Winardi"]},
+    "Tim KMD": {"Ketua Tim": ["Adi Nugroho", "Valent Gigih Saputri", "Putri Larasaty"], "Coach": ["Edi Waryono", "Indah Budiati", "Wisnu Winardi"]},
 }
 
 # Fungsi untuk login
