@@ -58,6 +58,15 @@ TEAMS = {
     "Tim GENAI": {"Ketua Tim": ["Dhiar Niken Larasati", "Dewi Lestari Amaliah", "I Nyoman Setiawan"], "Coach": ["Ambar Dwi Santoso", "Mutijo", "Usman Bustaman"]},
     "Tim IPMPLUS": {"Ketua Tim": ["Yoyo Karyono", "Adi Nugroho", "Nia Setiyawati"], "Coach": ["Edi Waryono", "Mutijo", "Wisnu Winardi"]},
     "Tim KMD": {"Ketua Tim": ["Adi Nugroho", "Valent Gigih Saputri", "Putri Larasaty"], "Coach": ["Edi Waryono", "Indah Budiati", "Wisnu Winardi"]},
+    "Tim PSS": {"Ketua Tim": ["Putri Wahyu Handayani", "Zulfa Hidayah Satria Putri", "Tika Meilaningsih"], "Coach": ["Arham Rivai", "Taulina Anggarani", "Yeshri Rahayu"]},
+    "Tim PVD": {"Ketua Tim": ["Syukriyah Delyana", "Muhammad Ihsan", "Ria Noviana"], "Coach": ["Arham Rivai", "Mutijo", "Wisnu Winardi"]},
+    "Tim QG": {"Ketua Tim": ["Reni Amelia", "Yohanes Eki Apriliawan", "Ria Noviana"], "Coach": ["Arham Rivai", "Lestyowati Endang Widyantari", "Widyayanto Adinugroho"]},
+    "Tim REPO": {"Ketua Tim": ["Aprilia Ira Pratiwi", "Putri Larasaty", "Mohammad Ammar Alwandi"], "Coach": ["Ambar Dwi Santoso", "Widyayanto Adinugroho", "Yeshri Rahayu"]},
+    "Tim SAKIP": {"Ketua Tim": ["Adwi Hastuti", "Ety Kurniati", "Syukriyah Delyana"], "Coach": ["Indah Budiati", "Lestyowati Endang Widyantari", "Taulina Anggarani"]},
+    "Tim SAE": {"Ketua Tim": ["Dhiar Niken Larasati", "Dewi Krismawati", "Zulfa Hidayah Satria Putri"], "Coach": ["Edi Waryono", "Mutijo", "Usman Bustaman"]},
+    "Tim SD": {"Ketua Tim": ["Adi Nugroho", "Nurarifin", "Dewi Widyawati"], "Coach": ["Indah Budiati", "Mutijo", "Wisnu Winardi"]},
+    "Tim SDGs": {"Ketua Tim": ["Khairunnisah", "Erna Yulianingsih", "Aprilia Ira Pratiwi"], "Coach": ["Edi Waryono", "Indah Budiati", "Taulina Anggarani"]},
+    "Tim SIQAF": {"Ketua Tim": ["Yohanes Eki Apriliawan", "Synthia Natalia Kristiani", "Ranu Yulianto"], "Coach": ["Lestyowati Endang Widyantari", "Widyayanto Adinugroho", "Yeshri Rahayu"]},
 }
 
 # Fungsi untuk login
