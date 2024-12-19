@@ -143,19 +143,31 @@ def selection_form():
         if st.button("Logout"):
             logout()
         return
-
+    
     st.subheader("Form Pemilihan Tim")
-
+    
     # Menampilkan formulir untuk setiap tim
     for team in st.session_state.teams:
         st.write(f"**{team}**")
+        
+        # Pilihan ketua dan coach untuk tim tertentu
         ketua = st.radio(f"Pilih Ketua Tim untuk {team}:", TEAMS[team]["Ketua Tim"], key=f"{team}_ketua")
         coach = st.radio(f"Pilih Coach untuk {team}:", TEAMS[team]["Coach"], key=f"{team}_coach")
         
-        # Menyimpan pilihan pengguna
+        # Perbarui pilihan jika ada perubahan
         if ketua and coach:
-            st.session_state.selections.append([st.session_state.username, team, ketua, coach])
-
+            # Cari dan perbarui data yang ada untuk tim ini
+            updated = False
+            for i, selection in enumerate(st.session_state.selections):
+                if selection[1] == team:
+                    st.session_state.selections[i] = [st.session_state.username, team, ketua, coach]
+                    updated = True
+                    break
+            
+            # Jika tim belum dipilih, tambahkan pilihan baru
+            if not updated:
+                st.session_state.selections.append([st.session_state.username, team, ketua, coach])
+    
     # Tombol Selesai dan tampilkan hasil
     if st.button("Selesai"):
         for selection in st.session_state.selections:
